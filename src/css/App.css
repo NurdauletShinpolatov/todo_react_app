@@ -1,0 +1,13 @@
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: rgb(226, 226, 226);
+}
+
+.task {
+  list-style: none;
+  padding: 10px;
+  min-width: 400px;
+  
+}
+
