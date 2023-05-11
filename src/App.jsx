@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import './css/_null.css'
 import './css/App.css'
+import Task from './components/Task/Task';
+import AddNewTask from './components/AddNewTask/AddNewTask';
+import Filter from './components/Filter/Filter';
 
 const App = () => {
   const [tasks, setTasks] = useState([
@@ -35,31 +38,76 @@ const App = () => {
       status: "completed",
     }
   ]);
+  const [onEdit, setOnEdit] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+
+  const deleteTask = (id) => {
+    setTasks(prev => (prev.filter(elem => (elem.id != id))))
+  }
+
+  const enableEdit = (id) => { setOnEdit(id); }
+  const cancelEdit = () => { setOnEdit(""); }
+  const saveEdit = (id) => {
+    const editedValue = document.querySelector("#"+id).querySelector(".task__value").value;
+    setTasks(prev => (prev.map(item => {
+      if (item.id == id) {
+        item.value = editedValue;
+      }
+      return item;
+    })));
+    setOnEdit("");
+  }
+
+  const addNewTask = (e) => {
+    e.preventDefault();
+    const taskAddInput = e.target["taskAddInput"];
+    if (taskAddInput.value) {
+      const newTask = {
+        value: taskAddInput.value,
+        id: "a"+Date(),
+        status: "notStarted"
+      }
+      setTasks(prev => ([newTask, ...prev]));
+      taskAddInput.value = "";
+    } else {
+      alert("Tasks value should not be empty!");
+    }
+  }
+
+  const clearAllTasks = () => {
+    setTasks([]);
+  }
+
+  const filterByStatus = () => {
+    const newSelectedStatus = document.querySelector("#filterByStatus").value;
+    console.log(newSelectedStatus);
+    setSelectedStatus(newSelectedStatus);
+  }
+
+    // .filter((elem) => {
+  //   if (selectedStatus == "all") {
+  //     return true;
+  //   } else {
+  //     return elem.status == selectedStatus;
+  //   }
+  // })
 
   const tasksJsx = tasks.map((item) => (
-    <li className='task'>
-      <input type="text" className='toggleCheck' />
-      <div className="task_value">
-        <input type="text"  value={item.value} />
-      </div>
-      <div className="icon">
-        <i class='bx bx-sm bxs-save'></i>
-      </div>
-      <div className="icon">
-        <i class='bx bx-sm bx-x'></i>
-      </div>
-      <div className="icon">
-        <i class="bx bx-sm bxs-pencil"></i>
-      </div>
-      <div className="icon">
-        <i class="bx bx-sm bx-trash"></i>
-      </div>
-    </li>
+    < Task item={item}/>
   ))
+
+
   return (
     <>
       <div className='wrapper'>
-        {tasksJsx}
+        <div className="block">
+          <AddNewTask addNewTask={addNewTask} />
+          <Filter props={{filterByStatus, selectedStatus}} />
+          <ul className="tasks__container">
+            {tasksJsx}
+          </ul>
+          <button onClick={clearAllTasks} className='clearAll'>clear</button>
+        </div>
       </div>
     </>
   )

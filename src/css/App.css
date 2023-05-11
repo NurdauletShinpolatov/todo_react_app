@@ -1,13 +1,93 @@
+:root {
+  --blue: #4094f7;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: rgb(226, 226, 226);
+  font-family: 'Quicksand';
+}
+
+/* =================================  ====================================== */
+.block {
+  background: #ffffff;
+  width: max-content;
+  min-width: 400px;
+  min-height: 80vh;
+  height: 100%;
+  margin: 3rem auto;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.task__add {
+  width: 100%;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.task__add-input {
+  border: 1px solid #e7e7e7;
+  flex-grow: 1;
+  padding: 8px 16px;
+  border-radius: 8px;
 }
 
 .task {
-  list-style: none;
-  padding: 10px;
-  min-width: 400px;
-  
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 1rem;
+  padding: 8px 1rem;
+  border-radius: 8px;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
 }
 
+.task__main {
+  flex-grow: 1;
+}
+
+.task__value {
+  width: 100%;
+}
+.task__value:disabled {
+  background: #ffffff;
+}
+
+.clearAll {
+  background: transparent;
+  font-size: 18px;
+  color: var(--blue);
+}
+.clearAll:active {
+  color: #377ccc;
+}
+
+
+
+/* =========================== pseudo ================================ */
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  background-color: var(--blue);
+  color: #ffffff;
+  font-weight: 600;
+}
+.btn:hover {
+  background-color: #3e8ae0;
+}
+.btn:active {
+  background-color: #377ccc;
+}
+
+.hidden {
+  display: none;
+}
+
+.completedTask {
+  background-color: #7df76f;
+}
