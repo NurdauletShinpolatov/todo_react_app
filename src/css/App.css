@@ -9,7 +9,7 @@ body {
   font-family: 'Quicksand';
 }
 
-/* =================================  ====================================== */
+/* ================================= block ====================================== */
 .block {
   background: #ffffff;
   width: max-content;
@@ -52,8 +52,6 @@ body {
 
 .task__value {
   width: 100%;
-}
-.task__value:disabled {
   background: #ffffff;
 }
 
@@ -66,6 +64,54 @@ body {
   color: #377ccc;
 }
 
+.edit:hover, .save:hover, .delete:hover, .cancel:hover {
+  color: var(--blue);
+  cursor: pointer;
+} 
+
+.task__checkbox {
+  cursor: pointer;
+}
+
+/* ==================== filter ========================= */
+.filter__by-status {
+  padding: 1rem 1rem;
+  font-weight: 500;
+}
+.filterByStatus-label {
+  margin-right: 1rem;
+}
+.filterByStatus {
+  border: 1px solid #e7e7e7;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+/* =========================== pagination ================================ */
+.pagination {
+  padding: 5px 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.numOfTasks {
+  padding: 5px;
+  width: 45px;
+  border: 1px solid #e7e7e7;
+  border-radius: 4px;
+}
+
+.pages {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.page {
+  padding: 5px;
+  border: 1px solid #e7e7e7;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
 
 /* =========================== pseudo ================================ */
@@ -90,4 +136,9 @@ body {
 
 .completedTask {
   background-color: #7df76f;
+  text-decoration: line-through;
+}
+
+.pointerEventsNone {
+  pointer-events: none;
 }

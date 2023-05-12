@@ -1,116 +1,124 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './css/_null.css'
 import './css/App.css'
 import Task from './components/Task/Task';
 import AddNewTask from './components/AddNewTask/AddNewTask';
 import Filter from './components/Filter/Filter';
 
+// cd Coding\WWW\Uacademy\react\todo_project
+
 const App = () => {
   const [tasks, setTasks] = useState([
     {
       value: "Malumotlar LOCAL STORAGE da saqlanadi",
       id: "a1",
-      status: "inProgress",
+      completed: false,
     },
     {
       value: "DRAG qilib vaziyfalarning tartiblang",
       id: "a2",
-      status: "inProgress",
+      completed: false,
     },
     {
       value: "Ozgartirib bolgach ENTER bosing",
       id: "a3",
-      status: "notStarted",
+      completed: true,
     },
     { 
       value: "CRUD", 
       id: "a4", 
-      status: "notStarted",
+      completed: true,
     },
     {
       value: "BAJARILGAN vaziyfani belgilasa boladi",
       id: "a5",
-      status: "completed",
+      completed: false,
     },
     {
       value: "barajilgan/bajarilmaganlarni FILTRLANG",
       id: "a6",
-      status: "completed",
+      completed: false,
     }
   ]);
-  const [onEdit, setOnEdit] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
-
-  const deleteTask = (id) => {
-    setTasks(prev => (prev.filter(elem => (elem.id != id))))
+  const [taskPerPage, setTaskPerPage] = useState(9);
+  const [currentPage, setCurrentPage] = useState(1);
+  let numOfPages = tasks.length == 0 ? 1 : (Math.ceil(tasks.length / taskPerPage));
+  let pages = [];
+  for (let i = 1; i <= numOfPages; i++) {
+    pages.push(i);
   }
 
-  const enableEdit = (id) => { setOnEdit(id); }
-  const cancelEdit = () => { setOnEdit(""); }
-  const saveEdit = (id) => {
-    const editedValue = document.querySelector("#"+id).querySelector(".task__value").value;
-    setTasks(prev => (prev.map(item => {
-      if (item.id == id) {
-        item.value = editedValue;
-      }
-      return item;
-    })));
-    setOnEdit("");
-  }
+  const clearAllTasks = () => { setTasks([]); }
 
-  const addNewTask = (e) => {
-    e.preventDefault();
-    const taskAddInput = e.target["taskAddInput"];
-    if (taskAddInput.value) {
-      const newTask = {
-        value: taskAddInput.value,
-        id: "a"+Date(),
-        status: "notStarted"
-      }
-      setTasks(prev => ([newTask, ...prev]));
-      taskAddInput.value = "";
-    } else {
-      alert("Tasks value should not be empty!");
+  const filterByStatus = () => ( tasks.filter((elem) => {
+    switch (selectedStatus) {
+      case "completed":
+        return elem.completed
+      case "inProgress":
+        return !elem.completed
+      default:
+        return true;
     }
+  }) )
+
+  const filterByPage = (array) => {
+    return array.slice((currentPage-1)*taskPerPage, currentPage*taskPerPage);
   }
 
-  const clearAllTasks = () => {
-    setTasks([]);
-  }
-
-  const filterByStatus = () => {
-    const newSelectedStatus = document.querySelector("#filterByStatus").value;
-    console.log(newSelectedStatus);
-    setSelectedStatus(newSelectedStatus);
-  }
-
-    // .filter((elem) => {
-  //   if (selectedStatus == "all") {
-  //     return true;
-  //   } else {
-  //     return elem.status == selectedStatus;
-  //   }
-  // })
-
-  const tasksJsx = tasks.map((item) => (
-    < Task item={item}/>
+  const tasksJsx = filterByPage(filterByStatus()).map((item) => (
+    < Task key={item.id} item={item} setTasks={setTasks} />
   ))
 
+  const changeTasksPerPage = (e) => {
+    setTaskPerPage(e.target.value)
+  }
 
+  const pageClicked = (item) => {
+    setCurrentPage(item);
+  }
+
+  // min = 1, max = 9
   return (
     <>
-      <div className='wrapper'>
+      <div className="wrapper">
         <div className="block">
-          <AddNewTask addNewTask={addNewTask} />
-          <Filter props={{filterByStatus, selectedStatus}} />
-          <ul className="tasks__container">
-            {tasksJsx}
-          </ul>
-          <button onClick={clearAllTasks} className='clearAll'>clear</button>
+          <AddNewTask setTasks={setTasks} />
+          <Filter
+            selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
+          />
+          <ul className="tasks__container">{tasksJsx}</ul>
+          <button onClick={clearAllTasks} className="clearAll">
+            clear
+          </button>
+          <div className="pagination">
+            <div>
+              <label htmlFor="numOfTasks">Number of tasks: </label>
+              <input
+                type="number"
+                onChange={changeTasksPerPage}
+                name="numOfTasks"
+                className="numOfTasks"
+                value={taskPerPage}
+              />
+            </div>
+            <div className="pages">
+              {pages.map((item) => (
+                <span
+                  onClick = {() => { pageClicked(item); }}
+                  key = {item}
+                  className = "page"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </>
-  )
+  );
 }
 
 export default App
