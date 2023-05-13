@@ -53,12 +53,23 @@ const Task = (props) => {
   }, [isOnEdit])
 
   return (
-    <li id={item.id} key={item.id} className={`task ${item.completed ? "completedTask" : "" }`}>
-      <input onClick={checkTask} checked={item.completed} type="checkbox" className="task__checkbox" />
+    <li
+      id={item.id}
+      key={item.id}
+      className={`task ${item.completed ? "completedTask" : ""}`}
+    >
+      <input
+        onChange={checkTask}
+        checked={item.completed}
+        type="checkbox"
+        className="task__checkbox"
+      />
       <div className="task__main">
         <input
           ref={inputElem}
-          className={`task__value pointerEventsNone ${item.completed ? "completedTask" : "" }`}
+          className={`task__value pointerEventsNone ${
+            item.completed ? "completedTask" : ""
+          }`}
           disabled={!isOnEdit}
           onChange={changeTaskValue}
           type="text"

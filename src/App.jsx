@@ -5,6 +5,8 @@ import Task from './components/Task/Task';
 import AddNewTask from './components/AddNewTask/AddNewTask';
 import Filter from './components/Filter/Filter';
 
+// cd ../..
+// E:
 // cd Coding\WWW\Uacademy\react\todo_project
 
 const App = () => {
@@ -43,12 +45,8 @@ const App = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [taskPerPage, setTaskPerPage] = useState(9);
   const [currentPage, setCurrentPage] = useState(1);
-  let numOfPages = tasks.length == 0 ? 1 : (Math.ceil(tasks.length / taskPerPage));
-  let pages = [];
-  for (let i = 1; i <= numOfPages; i++) {
-    pages.push(i);
-  }
-
+  let pages =  [];
+  
   const clearAllTasks = () => { setTasks([]); }
 
   const filterByStatus = () => ( tasks.filter((elem) => {
@@ -63,6 +61,10 @@ const App = () => {
   }) )
 
   const filterByPage = (array) => {
+    let numOfPages = tasks.length == 0 ? 1 : (Math.ceil(array.length / taskPerPage));
+    for (let i = 1; i <= numOfPages; i++) {
+      pages.push(i);
+    }
     return array.slice((currentPage-1)*taskPerPage, currentPage*taskPerPage);
   }
 
@@ -71,7 +73,12 @@ const App = () => {
   ))
 
   const changeTasksPerPage = (e) => {
-    setTaskPerPage(e.target.value)
+    if (e.target.value == "") {
+      alert("It cannot be 0. You should write a different number");
+      setTaskPerPage(9);
+    } else {
+      setTaskPerPage(e.target.value)
+    }
   }
 
   const pageClicked = (item) => {
