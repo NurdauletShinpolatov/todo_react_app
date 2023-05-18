@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import './css/_null.css'
 import './css/App.css'
 import Task from './components/Task/Task';
@@ -8,6 +8,9 @@ import Filter from './components/Filter/Filter';
 // cd ../..
 // E:
 // cd Coding\WWW\Uacademy\react\todo_project
+// npm start
+
+export const Context = createContext();
 
 const App = () => {
   const [tasks, setTasks] = useState([
@@ -85,16 +88,15 @@ const App = () => {
     setCurrentPage(item);
   }
 
+  
+
   // min = 1, max = 9
   return (
-    <>
+    <Context.Provider value={{tasks, setTasks, selectedStatus, setSelectedStatus}}>
       <div className="wrapper">
         <div className="block">
-          <AddNewTask setTasks={setTasks} />
-          <Filter
-            selectedStatus={selectedStatus}
-            setSelectedStatus={setSelectedStatus}
-          />
+          <AddNewTask />
+          <Filter />
           <ul className="tasks__container">{tasksJsx}</ul>
           <button onClick={clearAllTasks} className="clearAll">
             clear
@@ -124,7 +126,7 @@ const App = () => {
           </div>
         </div>
       </div>
-    </>
+      </Context.Provider>
   );
 }
 

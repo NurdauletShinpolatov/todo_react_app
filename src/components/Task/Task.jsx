@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Context } from "../../App";
 
 const Task = (props) => {
-  const { item, setTasks } = { ...props };
+  const { setTasks } = useContext(Context);
+  const item = props.item;
+
   const [isOnEdit, setIsOnEdit] = useState(false);
   const [taskValue, setTaskValue] = useState(item.value);
   const inputElem = useRef();
@@ -19,8 +22,10 @@ const Task = (props) => {
     });
     inputElem.current.classList.remove("pointerEventsNone");
   };
+
   const cancelEdit = () => { 
     setIsOnEdit(!isOnEdit);
+    setTaskValue(item.value);
     inputElem.current.classList.add("pointerEventsNone");
   };
   const saveEdit = () => {

@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
+import { Context } from '../../App'
 
 const Filter = (props) => {
-  const {status, setSelectedStatus} = props
+  const {status, setSelectedStatus} = useContext(Context);
 
   const changeSelectedStatus = (e) => {
     setSelectedStatus(e.target.value)

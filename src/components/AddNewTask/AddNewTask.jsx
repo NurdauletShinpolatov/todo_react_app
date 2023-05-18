@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import { Context } from '../../App';
 
-const AddNewTask = (props) => {
-  const {setTasks} = props;
+const AddNewTask = () => {
+  const { setTasks } = useContext(Context);
 
   const addNewTask = (e) => {
     e.preventDefault();
