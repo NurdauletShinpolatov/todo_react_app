@@ -1,10 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Provider } from 'react-redux';
+import { combineReducers, createStore } from 'redux';
 import App from './App';
+import { todoReducer } from './redux/todoReducer';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const allReducers = combineReducers({ todos: todoReducer })
+const store = createStore(allReducers)
+
+const queryClient = new QueryClient();
+
 root.render(
-    <App />
+    <QueryClientProvider client={queryClient} >
+        <Provider store={store}>
+            <App />
+        </Provider>
+    </QueryClientProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function

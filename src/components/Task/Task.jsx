@@ -1,18 +1,43 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import { Context } from "../../App";
+import React, { useEffect, useRef, useState } from "react";
+import { useMutation } from "react-query";
+import { useDispatch } from "react-redux";
+import { tasksService } from "../../API/tasksService";
+import { deleteActionCreator, editActionCreator, toggleCompletedActionCreator } from "../../redux/todoReducer";
 
 const Task = (props) => {
-  const { setTasks } = useContext(Context);
   const item = props.item;
+
+  const deleteMutation = useMutation(tasksService.delete);
+  const updateMutation = useMutation(tasksService.update);
+  const dispatch = useDispatch();
 
   const [isOnEdit, setIsOnEdit] = useState(false);
   const [taskValue, setTaskValue] = useState(item.value);
   const inputElem = useRef();
 
   const deleteTask = () => {
-    setTasks((prev) => prev.filter((elem) => elem.id != item.id));
+    // dispatch(deleteActionCreator(item.id))
+    deleteMutation.mutate(item.id)
   };
-
+  const cancelEdit = () => { 
+    setIsOnEdit(!isOnEdit);
+    setTaskValue(item.value);
+    inputElem.current.classList.add("pointerEventsNone");
+  };
+  const saveEdit = () => {
+    setIsOnEdit(false);
+    inputElem.current.classList.add("pointerEventsNone");
+    // dispatch(editActionCreator(item.id, {
+    //   value: taskValue,
+    //   id: item.id,
+    //   completed: item.completed
+    // }))
+    updateMutation.mutate(item.id, {
+      value: taskValue,
+      id: item.id,
+      completed: item.completed
+    })
+  };
   const enableEdit = () => { 
     setIsOnEdit(!isOnEdit);
     inputElem.current.addEventListener('keydown', (e) => {
@@ -22,34 +47,16 @@ const Task = (props) => {
     });
     inputElem.current.classList.remove("pointerEventsNone");
   };
-
-  const cancelEdit = () => { 
-    setIsOnEdit(!isOnEdit);
-    setTaskValue(item.value);
-    inputElem.current.classList.add("pointerEventsNone");
-  };
-  const saveEdit = () => {
-    setIsOnEdit(false);
-    inputElem.current.classList.add("pointerEventsNone");
-    setTasks((prev) =>
-      prev.map((elem) => {
-        if (elem.id == item.id) {
-          elem.value = taskValue;
-        }
-        return elem;
-      })
-    );
-  };
   const changeTaskValue = (e) => {
     setTaskValue(e.target.value);
   }
   const checkTask = () => {
-    setTasks(prev => prev.map((elem) => {
-      if (elem.id == item.id) {
-        elem.completed = !elem.completed;
-      }
-      return elem;
-    }))
+    // dispatch(toggleCompletedActionCreator(item.id))
+    updateMutation.mutate(item.id, {
+      value: item.value,
+      id: item.id,
+      completed: !item.completed
+    })
   }
 
   useEffect(() => {

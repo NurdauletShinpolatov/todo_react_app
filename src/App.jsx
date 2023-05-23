@@ -4,55 +4,38 @@ import './css/App.css'
 import Task from './components/Task/Task';
 import AddNewTask from './components/AddNewTask/AddNewTask';
 import Filter from './components/Filter/Filter';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { clearAllTasksActionCreator, setTasksActionCreator } from './redux/todoReducer';
+import { useQuery } from 'react-query';
+import { tasksService } from './API/tasksService';
 
 // cd ../..
 // E:
 // cd Coding\WWW\Uacademy\react\todo_project
 // npm start
 
-export const Context = createContext();
-
 const App = () => {
-  const [tasks, setTasks] = useState([
-    {
-      value: "Malumotlar LOCAL STORAGE da saqlanadi",
-      id: "a1",
-      completed: false,
-    },
-    {
-      value: "DRAG qilib vaziyfalarning tartiblang",
-      id: "a2",
-      completed: false,
-    },
-    {
-      value: "Ozgartirib bolgach ENTER bosing",
-      id: "a3",
-      completed: true,
-    },
-    { 
-      value: "CRUD", 
-      id: "a4", 
-      completed: true,
-    },
-    {
-      value: "BAJARILGAN vaziyfani belgilasa boladi",
-      id: "a5",
-      completed: false,
-    },
-    {
-      value: "barajilgan/bajarilmaganlarni FILTRLANG",
-      id: "a6",
-      completed: false,
-    }
-  ]);
-  const [selectedStatus, setSelectedStatus] = useState("all");
+  const todoFromRedux = useSelector( (state) => state.todos.tasks);
+  const dispatch = useDispatch();
+  const {data:tasks, isLoading, isSuccess, isError, error} = useQuery(
+    "getTasks", 
+    () => tasksService.get().then(res => {
+      return res.data
+    })
+    );
+  if (isSuccess) {
+    dispatch(setTasksActionCreator(tasks))
+  }
+  
+  const selectedStatus = useSelector( (state) => state.todos.selectedStatus);
+
   const [taskPerPage, setTaskPerPage] = useState(9);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchFor, setSearchFor] = useState("");
   let pages =  [];
-  
-  const clearAllTasks = () => { setTasks([]); }
 
-  const filterByStatus = () => ( tasks.filter((elem) => {
+  const filterByStatus = () => ( todoFromRedux.filter((elem) => {
     switch (selectedStatus) {
       case "completed":
         return elem.completed
@@ -63,16 +46,21 @@ const App = () => {
     }
   }) )
 
+  const search = () => {
+    // setCurrentPage(1);
+    return todoFromRedux.filter(task => task.value == searchFor)
+  }
+
   const filterByPage = (array) => {
-    let numOfPages = tasks.length == 0 ? 1 : (Math.ceil(array.length / taskPerPage));
+    let numOfPages = todoFromRedux.length == 0 ? 1 : (Math.ceil(array.length / taskPerPage));
     for (let i = 1; i <= numOfPages; i++) {
       pages.push(i);
     }
     return array.slice((currentPage-1)*taskPerPage, currentPage*taskPerPage);
   }
 
-  const tasksJsx = filterByPage(filterByStatus()).map((item) => (
-    < Task key={item.id} item={item} setTasks={setTasks} />
+  const tasksJsx = filterByPage(searchFor ? search() : filterByStatus()).map((item) => (
+    < Task key={item.id} item={item} />
   ))
 
   const changeTasksPerPage = (e) => {
@@ -87,17 +75,19 @@ const App = () => {
   const pageClicked = (item) => {
     setCurrentPage(item);
   }
-
   
+  const clearAllTasks = () => {
+    dispatch(clearAllTasksActionCreator())
+  }
 
-  // min = 1, max = 9
   return (
-    <Context.Provider value={{tasks, setTasks, selectedStatus, setSelectedStatus}}>
       <div className="wrapper">
         <div className="block">
-          <AddNewTask />
+          <AddNewTask setSearchFor={setSearchFor} />
           <Filter />
-          <ul className="tasks__container">{tasksJsx}</ul>
+          <ul className="tasks__container">
+            { tasksJsx }
+          </ul>
           <button onClick={clearAllTasks} className="clearAll">
             clear
           </button>
@@ -126,7 +116,6 @@ const App = () => {
           </div>
         </div>
       </div>
-      </Context.Provider>
   );
 }
 

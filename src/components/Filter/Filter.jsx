@@ -1,11 +1,13 @@
-import React, { useContext, useState } from 'react'
-import { Context } from '../../App'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { setSelectedStatusActionCreator } from '../../redux/todoReducer';
 
-const Filter = (props) => {
-  const {status, setSelectedStatus} = useContext(Context);
+const Filter = () => {
+  const selectedStatus = useSelector( (state) => state.todos.selectedStatus);
+  const dispatch = useDispatch()
 
   const changeSelectedStatus = (e) => {
-    setSelectedStatus(e.target.value)
+    dispatch(setSelectedStatusActionCreator(e.target.value));
   }
 
 
@@ -13,7 +15,7 @@ const Filter = (props) => {
     <div className="filter">
         <div className="filter__by-status">
           <label className='filterByStatus-label' htmlFor="filterByStatus">Filter: </label>
-          <select className='filterByStatus' onChange={changeSelectedStatus} name="filterByStatus" id="filterByStatus" value={props.selectedStatus}>
+          <select className='filterByStatus' onChange={changeSelectedStatus} name="filterByStatus" id="filterByStatus" value={selectedStatus}>
               <option value="all">All</option>
               <option value="inProgress">In progress</option>
               <option value="completed">Completed</option>
