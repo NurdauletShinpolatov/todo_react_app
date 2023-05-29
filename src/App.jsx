@@ -15,18 +15,29 @@ import { tasksService } from './API/tasksService';
 // cd Coding\WWW\Uacademy\react\todo_project
 // npm start
 
+
 const App = () => {
   const todoFromRedux = useSelector( (state) => state.todos.tasks);
+  const reload = useSelector( (state) => state.todos.reload )
   const dispatch = useDispatch();
-  const {data:tasks, isLoading, isSuccess, isError, error} = useQuery(
-    "getTasks", 
-    () => tasksService.get().then(res => {
-      return res.data
-    })
-    );
-  if (isSuccess) {
-    dispatch(setTasksActionCreator(tasks))
-  }
+  // const {data:tasks, isLoading, isSuccess, isError, error} = useQuery(
+  //   "getTasks", 
+  //   () => tasksService.get().then(res => {
+  //     return res.data
+  //   })
+  //   );
+  // if (isSuccess) {
+  //   dispatch(setTasksActionCreator(tasks))
+  // }
+
+  
+
+  useEffect(() => {
+    tasksService.get().then(res => dispatch(setTasksActionCreator(res.data)))
+  }, [reload])
+
+
+
   
   const selectedStatus = useSelector( (state) => state.todos.selectedStatus);
 
@@ -47,7 +58,7 @@ const App = () => {
   }) )
 
   const search = () => {
-    // setCurrentPage(1);
+ 
     return todoFromRedux.filter(task => task.value == searchFor)
   }
 
@@ -83,7 +94,7 @@ const App = () => {
   return (
       <div className="wrapper">
         <div className="block">
-          <AddNewTask setSearchFor={setSearchFor} />
+          <AddNewTask setSearchFor={setSearchFor} setCurrentPage={setCurrentPage} />
           <Filter />
           <ul className="tasks__container">
             { tasksJsx }

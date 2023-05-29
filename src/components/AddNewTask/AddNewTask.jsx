@@ -4,9 +4,8 @@ import { useDispatch } from 'react-redux';
 import { tasksService } from '../../API/tasksService';
 import { setTasksActionCreator } from '../../redux/todoReducer';
 
-const AddNewTask = (props) => {
+const AddNewTask = ( { setSearchFor, setCurrentPage }) => {
   const postMutation = useMutation(tasksService.create);
-  const { setSearchFor } = props;
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState("")
   const {data:tasks, isLoading, isSuccess, isError, error} = useQuery(
@@ -36,6 +35,7 @@ const AddNewTask = (props) => {
   }
 
   const search = () => {
+    setCurrentPage(1);
     setSearchFor(inputValue);
   }
 

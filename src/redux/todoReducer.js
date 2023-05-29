@@ -5,6 +5,7 @@ const TOGGLE_CHECK = "TOGGLE_CHECK";
 const SET_SELECTED_STATUS = "SET_SELECTED_STATUS";
 const CLEAR_ALL_TASKS = "CLEAR_ALL_TASKS";
 const SET_TASKS = "SET_TASKS";
+const RELOAD = "RELOAD"
 
 const initialState = {
   tasks: [
@@ -39,7 +40,8 @@ const initialState = {
       completed: false,
     }
   ],
-  selectedStatus: "all"
+  selectedStatus: "all",
+  reload: true
 }
 
 export const todoReducer = (state = initialState, action) => {
@@ -79,6 +81,10 @@ export const todoReducer = (state = initialState, action) => {
 
         case SET_TASKS:
           return {...state, tasks: action.tasks}
+
+        case RELOAD:
+          return {...state, reload: !state.reload}
+
         default:
             return state;
     }
@@ -126,3 +132,8 @@ export const clearAllTasksActionCreator = () => {
         type: CLEAR_ALL_TASKS
     };
 };
+export const reloadAC = () => {
+  return {
+    type: RELOAD
+  }
+}

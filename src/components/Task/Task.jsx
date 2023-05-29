@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useMutation } from "react-query";
 import { useDispatch } from "react-redux";
 import { tasksService } from "../../API/tasksService";
-import { deleteActionCreator, editActionCreator, toggleCompletedActionCreator } from "../../redux/todoReducer";
+import { deleteActionCreator, editActionCreator, reloadAC, setTasksActionCreator, toggleCompletedActionCreator } from "../../redux/todoReducer";
 
 const Task = (props) => {
   const item = props.item;
@@ -18,6 +18,7 @@ const Task = (props) => {
   const deleteTask = () => {
     // dispatch(deleteActionCreator(item.id))
     deleteMutation.mutate(item.id)
+    dispatch(reloadAC())
   };
   const cancelEdit = () => { 
     setIsOnEdit(!isOnEdit);
@@ -32,11 +33,20 @@ const Task = (props) => {
     //   id: item.id,
     //   completed: item.completed
     // }))
-    updateMutation.mutate(item.id, {
+    
+    
+    // updateMutation.mutate(item.id, {
+    //   value: taskValue,
+    //   id: item.id,
+    //   completed: item.completed
+    // })
+
+    tasksService.update(item.id, {
       value: taskValue,
       id: item.id,
       completed: item.completed
     })
+    dispatch(reloadAC())
   };
   const enableEdit = () => { 
     setIsOnEdit(!isOnEdit);
@@ -52,11 +62,19 @@ const Task = (props) => {
   }
   const checkTask = () => {
     // dispatch(toggleCompletedActionCreator(item.id))
-    updateMutation.mutate(item.id, {
+
+    // updateMutation.mutate(item.id, {
+    //   value: item.value,
+    //   id: item.id,
+    //   completed: !item.completed
+    // })
+
+    tasksService.update(item.id, {
       value: item.value,
       id: item.id,
       completed: !item.completed
     })
+    dispatch(reloadAC())
   }
 
   useEffect(() => {
